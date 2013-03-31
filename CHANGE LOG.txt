@@ -1,0 +1,15 @@
+/**
+ * Geocoder
+ * 
+ * @package		Geocoder
+ * @author		Justin Kimbrell
+ * @copyright		Copyright (c) 2012, Objective HTML
+ * @link 		http://www.objectivehtml.com/geocoder
+ * @version		1.0.0
+ * @build		20130317
+ */
+
+#### 1.0.0
+##### 03/31/2013
+
+Initial release

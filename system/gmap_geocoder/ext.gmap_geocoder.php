@@ -71,7 +71,7 @@ class Gmap_geocoder_ext {
 		foreach($settings->result() as $setting_index => $setting)
 		{
 			$channel_ids   = array();
-			$channel_names = explode('|', $setting->channel_names);
+			$channel_names = explode(',', $setting->channel_names);
 			
 			foreach($channel_names as $index => $channel_name)
 			{
