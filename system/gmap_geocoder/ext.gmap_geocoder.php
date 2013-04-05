@@ -51,21 +51,17 @@ class Gmap_geocoder_ext {
 	   	$this->EE =& get_instance();
 
         $this->settings = $settings;
-        
-        $this->EE->lang->loadfile('gmap_geocoder');
-        $this->EE->load->model('gmap_geocoder_model');
-        $this->EE->load->driver('channel_data');
-        
-		$this->EE->channel_data->api->load('gmap');
     }
-
+    
 	public function settings()
 	{
 		return '';
 	}
 	
 	public function entry_submission_start($channel_id, $autosave)
-	{ 	
+	{ 	        
+        $this->_load();
+        
 		$settings = $this->EE->gmap_geocoder_model->get_settings();
 		
 		foreach($settings->result() as $setting_index => $setting)
@@ -154,7 +150,9 @@ class Gmap_geocoder_ext {
 	}
 
 	public function entry_submission_ready($meta, $data, $autosave)
-	{		
+	{	        
+        $this->_load();
+        	
 		$settings = $this->EE->gmap_geocoder_model->get_settings();
 		
 		if(!isset($this->EE->session->cache['gmap_geocoder']))
@@ -211,6 +209,16 @@ class Gmap_geocoder_ext {
 		return $data;
 	}
 	
+    
+    private function _load()
+    {
+        $this->EE->lang->loadfile('gmap_geocoder');
+        $this->EE->load->model('gmap_geocoder_model');
+        $this->EE->load->driver('channel_data');
+        
+		$this->EE->channel_data->api->load('gmap');
+    }
+
 	public function entry_submission_end($entry_id, $meta, $data)
 	{	
 		// var_dump($data);exit();

@@ -83,7 +83,7 @@ class Gmap_geocoder_mcp {
 			'action'          => $this->_url('new_setting_action'),
 			'new_setting_url' => $this->_url('new_setting'),
 			'settings'        => array(),
-			'xid'             => $this->EE->security->generate_xid(),
+			'xid'             => $this->_generate_xid(),
 			'table'           => $this->_build_settings_table(),
 			'button'		   => lang('gmap_geocoder_save_setting')
 		);
@@ -107,7 +107,7 @@ class Gmap_geocoder_mcp {
 			'header'           => lang('gmap_geocoder_edit_instance'),
 			'action'           => $this->_url('edit_setting_action') . '&id='.$id,
 			'edit_setting_url' => $this->_url('edit_setting'),
-			'xid'              => $this->EE->security->generate_xid(),
+			'xid'              => $this->_generate_xid(),
 			'table'            => $this->_build_settings_table($settings),
 			'button'		   => lang('gmap_geocoder_update_setting')
 		);
@@ -220,6 +220,38 @@ class Gmap_geocoder_mcp {
 	private function _url($method = FALSE)
 	{
 		return $this->_base_url . ($method ? '&method='.$method : NULL);
+	}
+	 
+	/**
+	 * Generate Security Hash
+	 *
+	 * @return String XID generated
+	 */
+	private function _generate_xid($count = 1, $array = FALSE)
+	{
+		if(!method_exists($this->EE->security, 'generate_id'))
+		{
+			$hashes = array();
+			$inserts = array();
+	
+			for ($i = 0; $i < $count; $i++)
+			{
+				$hash = $this->EE->functions->random('encrypt');
+				$inserts[] = array(
+					'hash' 		   => $hash,
+					'ip_address'   => $this->EE->input->ip_address(),
+					'date' 		   => $this->EE->localize->now
+				);	
+				
+				$hashes[] = $hash;	
+			}
+			
+			$this->EE->db->insert_batch('security_hashes', $inserts);
+	
+			return (count($hashes) > 1 OR $array) ? $hashes : $hashes[0];
+		}
+		
+		return $this->EE->security->generate_xid();
 	}
 	
 	/**
