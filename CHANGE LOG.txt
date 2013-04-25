@@ -5,9 +5,15 @@
  * @author		Justin Kimbrell
  * @copyright		Copyright (c) 2012, Objective HTML
  * @link 		http://www.objectivehtml.com/geocoder
- * @version		1.0.0
- * @build		20130317
+ * @version		1.0.1
+ * @build		20130425
  */
+
+#### 1.0.1
+##### 04/25/2013
+
+- (Bug Fix) Fixed all known 2.6.0 compatibility issues. Please report any 2.6.0 issues as you see them.
+
 
 #### 1.0.0
 ##### 03/31/2013

@@ -229,29 +229,36 @@ class Gmap_geocoder_mcp {
 	 */
 	private function _generate_xid($count = 1, $array = FALSE)
 	{
-		if(!method_exists($this->EE->security, 'generate_id'))
+		if(defined('XID_SECURE_HASH'))
 		{
-			$hashes = array();
-			$inserts = array();
-	
-			for ($i = 0; $i < $count; $i++)
+			return XID_SECURE_HASH;
+		}
+		else
+		{
+			if(!method_exists($this->EE->security, 'generate_id'))
 			{
-				$hash = $this->EE->functions->random('encrypt');
-				$inserts[] = array(
-					'hash' 		   => $hash,
-					'ip_address'   => $this->EE->input->ip_address(),
-					'date' 		   => $this->EE->localize->now
-				);	
+				$hashes = array();
+				$inserts = array();
+		
+				for ($i = 0; $i < $count; $i++)
+				{
+					$hash = $this->EE->functions->random('encrypt');
+					$inserts[] = array(
+						'hash' 		   => $hash,
+						'ip_address'   => $this->EE->input->ip_address(),
+						'date' 		   => $this->EE->localize->now
+					);	
+					
+					$hashes[] = $hash;	
+				}
 				
-				$hashes[] = $hash;	
+				$this->EE->db->insert_batch('security_hashes', $inserts);
+		
+				return (count($hashes) > 1 OR $array) ? $hashes : $hashes[0];
 			}
 			
-			$this->EE->db->insert_batch('security_hashes', $inserts);
-	
-			return (count($hashes) > 1 OR $array) ? $hashes : $hashes[0];
+			return $this->EE->security->generate_xid();
 		}
-		
-		return $this->EE->security->generate_xid();
 	}
 	
 	/**
