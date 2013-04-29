@@ -94,11 +94,12 @@ class Gmap_geocoder_ext {
 				$channel_ids[] = $channel->channel_id;
 			}
 			
-			$location = array();
-				
+			$location       = array();
+			$geocode_fields = json_decode($setting->geocode_fields);
+			
 			if(in_array($channel_id, $channel_ids))
 			{
-				foreach(json_decode($setting->geocode_fields) as $field)
+				foreach($geocode_fields as $index => $field)
 				{	
 					$field_id = FALSE;
 					
@@ -115,11 +116,24 @@ class Gmap_geocoder_ext {
 					{
 						$location[] = $field;						
 					}
+					
+					$geocode_fields[$index] = (object) array(
+						'field_name' => $field,
+						'field_id'   => $field_id
+					);
 				}
 				
 				if(count($location) == 0)
-				{
-					$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');
+				{				
+					if(isset($this->EE->api_sc_channel_entries))
+					
+					{
+						$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
+					}
+					else
+					{
+						$this->EE->api_channel_entries->_set_error(lang('gmap_geocoder_no_valid_fields'));
+					}
 				}
 				else
 				{
@@ -136,7 +150,10 @@ class Gmap_geocoder_ext {
 						}
 						else
 						{
-							$this->EE->api_channel_entries->errors[] = $error;
+							foreach($geocode_fields as $field)
+							{
+								$this->EE->api_channel_entries->_set_error($error, 'field_id_'.$field->field_id);	
+							}
 						}
 					}
 					else
@@ -152,7 +169,7 @@ class Gmap_geocoder_ext {
 	public function entry_submission_ready($meta, $data, $autosave)
 	{	        
         $this->_load();
-        	
+        
 		$settings = $this->EE->gmap_geocoder_model->get_settings();
 		
 		if(!isset($this->EE->session->cache['gmap_geocoder']))
