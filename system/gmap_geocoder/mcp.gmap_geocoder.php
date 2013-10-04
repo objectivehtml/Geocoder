@@ -173,6 +173,17 @@ class Gmap_geocoder_mcp {
 						'true'  => 'Yes'
 					)
 				)
+			),
+			'throw_error_no_geocode_fields' => array(
+				'label'       => lang('gmap_geocoder_throw_error_no_geocode_fields'),
+				'description' => lang('gmap_geocoder_throw_error_no_geocode_fields_desc'),
+				'type'		  => 'select',
+				'settings'    => array(
+					'options'  => array(
+						'false' => 'No',
+						'true'  => 'Yes'
+					)
+				)
 			)
 		);
 		
