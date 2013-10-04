@@ -38,8 +38,10 @@ $lang = array(
 	'gmap_geocoder_no_valid_location'		  => '\'{location}\' is an invalid location\'',
 	
 	'gmap_geocoder_preserve_lat_lng'		  => 'Preserve Existing Coordinates?',
-	'gmap_geocoder_preserve_lat_lng_desc'	  => 'If this setting is set to Yes, then Geocoder will only run for new entries and entries being editted without coordinates. If a coordinate exists, the geocoding process will be skipped.'
+	'gmap_geocoder_preserve_lat_lng_desc'	  => 'If this setting is set to Yes, then Geocoder will only run for new entries and entries being editted without coordinates. If a coordinate exists, the geocoding process will be skipped.',
 
+	'gmap_geocoder_throw_error_no_geocode_fields'      => 'Throw Errors',
+	'gmap_geocoder_throw_error_no_geocode_fields_desc' => 'If this setting is set to Yes, then Geocoder will throw an error if no geocoder fields are present. If this is undesired behavior, set this setting to No.'
 );
 
 /* End of file lang.gmap_geocoder.php */

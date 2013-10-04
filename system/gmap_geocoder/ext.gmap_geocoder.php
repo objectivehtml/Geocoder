@@ -71,7 +71,7 @@ class Gmap_geocoder_ext {
 	}
 	
 	public function entry_submission_start($channel_id, $autosave)
-	{ 	 
+	{ 
 		if(!$this->EE->input->post('safecracker_geocode'))
 		{       
 	        $this->_load();
@@ -139,14 +139,17 @@ class Gmap_geocoder_ext {
 					
 					if(count($location) == 0)
 					{				
-						if(isset($this->EE->api_sc_channel_entries))
-						
+						if(!isset($setting->throw_error_no_geocode_fields) || $setting->throw_error_no_geocode_fields == 'true')
 						{
-							$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
-						}
-						else
-						{
-							$this->EE->api_channel_entries->_set_error(lang('gmap_geocoder_no_valid_fields'));
+							if(isset($this->EE->api_sc_channel_entries))
+							
+							{
+								$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
+							}
+							else
+							{
+								$this->EE->api_channel_entries->_set_error(lang('gmap_geocoder_no_valid_fields'));
+							}
 						}
 					}
 					else
@@ -252,8 +255,6 @@ class Gmap_geocoder_ext {
 				}
 			}
 		}
-
-		exit('stop');
 
 		return $data;
 	}

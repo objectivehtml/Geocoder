@@ -47,6 +47,10 @@ class Gmap_geocoder_upd {
 			'preserve_lat_lng' => array(
 				'type'		 => 'varchar',
 				'constraint' => 200
+			),
+			'throw_error_no_geocode_fields' => array(
+				'type'		 => 'varchar',
+				'constraint' => 200
 			)
 		)
 	);
