@@ -43,6 +43,10 @@ class Gmap_geocoder_upd {
 			),
 			'gmap_field_name' => array(
 				'type'		 => 'longtext'
+			),
+			'preserve_lat_lng' => array(
+				'type'		 => 'varchar',
+				'constraint' => 200
 			)
 		)
 	);
@@ -63,6 +67,7 @@ class Gmap_geocoder_upd {
 	);
 		
 	private $hooks = array(
+		array('safecracker_entry_form_tagdata_start', 'safecracker_entry_form_tagdata_start', '', 100),
 		array('entry_submission_start', 'entry_submission_start', '', 100),
 		array('entry_submission_ready', 'entry_submission_ready', '', 100),
 		array('entry_submission_stop', 'entry_submission_stop', '', 100)

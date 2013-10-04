@@ -162,6 +162,17 @@ class Gmap_geocoder_mcp {
 			'gmap_field_name' => array(
 				'label'       => lang('gmap_geocoder_gmap_field_name'),
 				'description' => lang('gmap_geocoder_gmap_field_name_desc')
+			),
+			'preserve_lat_lng' => array(
+				'label'       => lang('gmap_geocoder_preserve_lat_lng'),
+				'description' => lang('gmap_geocoder_preserve_lat_lng_desc'),
+				'type'		  => 'select',
+				'settings'    => array(
+					'options'  => array(
+						'false' => 'No',
+						'true'  => 'Yes'
+					)
+				)
 			)
 		);
 		

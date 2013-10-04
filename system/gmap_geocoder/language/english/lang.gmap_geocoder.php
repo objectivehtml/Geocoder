@@ -37,8 +37,9 @@ $lang = array(
 	'gmap_geocoder_no_valid_fields'  		  => 'There are no valid geocoder fields.',
 	'gmap_geocoder_no_valid_location'		  => '\'{location}\' is an invalid location\'',
 	
-// Start inserting custom language keys/values here
-	
+	'gmap_geocoder_preserve_lat_lng'		  => 'Preserve Existing Coordinates?',
+	'gmap_geocoder_preserve_lat_lng_desc'	  => 'If this setting is set to Yes, then Geocoder will only run for new entries and entries being editted without coordinates. If a coordinate exists, the geocoding process will be skipped.'
+
 );
 
 /* End of file lang.gmap_geocoder.php */

@@ -58,108 +58,123 @@ class Gmap_geocoder_ext {
 		return '';
 	}
 	
-	public function entry_submission_start($channel_id, $autosave)
-	{ 	        
-        $this->_load();
-        
-		$settings = $this->EE->gmap_geocoder_model->get_settings();
-		
-		foreach($settings->result() as $setting_index => $setting)
+	public function safecracker_entry_form_tagdata_start($tagdata, $obj)
+	{
+		$geocode = strtolower($this->EE->TMPL->fetch_param('geocode'));
+
+		if($geocode == 'false' || $geocode == 'no' || $geocode == '0')
 		{
-			$channel_ids   = array();
-			$channel_names = explode(',', $setting->channel_names);
+			$obj->form_hidden('safecracker_geocode', 'false');
+		}
+
+		return $tagdata;
+	}
+	
+	public function entry_submission_start($channel_id, $autosave)
+	{ 	 
+		if(!$this->EE->input->post('safecracker_geocode'))
+		{       
+	        $this->_load();
+	        
+			$settings = $this->EE->gmap_geocoder_model->get_settings();
 			
-			foreach($channel_names as $index => $channel_name)
+			foreach($settings->result() as $setting_index => $setting)
 			{
-				$channel_names[$index] = 'or ' . $channel_name;
-			}
-			
-			$channels = $this->EE->channel_data->get_channels(array(
-				'where' => array(
-					'site_id'      => config_item('site_id'),
-					'channel_name' => $channel_names
-				)
-			));			
-			
-			$fields = $this->EE->channel_data->get_fields(array(
-				'where' => array(
-					'site_id'      => config_item('site_id')
-				)
-			));
-			
-			$fields = $this->EE->channel_data->utility->reindex($fields->result(), 'field_name');
-			
-			foreach($channels->result() as $channel)
-			{
-				$channel_ids[] = $channel->channel_id;
-			}
-			
-			$location       = array();
-			$geocode_fields = json_decode($setting->geocode_fields);
-			
-			if(in_array($channel_id, $channel_ids))
-			{
-				foreach($geocode_fields as $index => $field)
-				{	
-					$field_id = FALSE;
-					
-					if(isset($fields[$field->field_name]))
-					{
-						$field_id = $fields[$field->field_name]->field_id;
-					}
-					
-					if($field = $this->EE->input->get_post($field->field_name))
-					{
-						$location[] = $field;	
-					}
-					else if($field_id && $field = $this->EE->input->get_post('field_id_'.$field_id))
-					{
-						$location[] = $field;						
-					}
-					
-					$geocode_fields[$index] = (object) array(
-						'field_name' => $field,
-						'field_id'   => $field_id
-					);
+				$channel_ids   = array();
+				$channel_names = explode(',', $setting->channel_names);
+				
+				foreach($channel_names as $index => $channel_name)
+				{
+					$channel_names[$index] = 'or ' . $channel_name;
 				}
 				
-				if(count($location) == 0)
-				{				
-					if(isset($this->EE->api_sc_channel_entries))
-					
-					{
-						$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
-					}
-					else
-					{
-						$this->EE->api_channel_entries->_set_error(lang('gmap_geocoder_no_valid_fields'));
-					}
-				}
-				else
+				$channels = $this->EE->channel_data->get_channels(array(
+					'where' => array(
+						'site_id'      => config_item('site_id'),
+						'channel_name' => $channel_names
+					)
+				));			
+				
+				$fields = $this->EE->channel_data->get_fields(array(
+					'where' => array(
+						'site_id'      => config_item('site_id')
+					)
+				));
+				
+				$fields = $this->EE->channel_data->utility->reindex($fields->result(), 'field_name');
+				
+				foreach($channels->result() as $channel)
 				{
-					$location_string[$setting_index] = implode($location, ' ');
-					$response = $this->EE->channel_data->gmap->geocode($location_string[$setting_index]);
-					
-					if($response[0]->status != 'OK')
-					{					
-						$error = str_replace(LD.'location'.RD, $location_string[$setting_index], lang('gmap_geocoder_no_valid_location'));
+					$channel_ids[] = $channel->channel_id;
+				}
+				
+				$location       = array();
+				$geocode_fields = json_decode($setting->geocode_fields);
+				
+				if(in_array($channel_id, $channel_ids))
+				{
+					foreach($geocode_fields as $index => $field)
+					{	
+						$field_id = FALSE;
 						
-						if(isset($this->EE->api_sc_channel_entries))
+						if(isset($fields[$field->field_name]))
 						{
-							$this->EE->api_sc_channel_entries->errors[] = $error;					
+							$field_id = $fields[$field->field_name]->field_id;
+						}
+						
+						if($field = $this->EE->input->get_post($field->field_name))
+						{
+							$location[] = $field;	
+						}
+						else if($field_id && $field = $this->EE->input->get_post('field_id_'.$field_id))
+						{
+							$location[] = $field;						
+						}
+						
+						$geocode_fields[$index] = (object) array(
+							'field_name' => $field,
+							'field_id'   => $field_id
+						);
+					}
+					
+					if(count($location) == 0)
+					{				
+						if(isset($this->EE->api_sc_channel_entries))
+						
+						{
+							$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
 						}
 						else
 						{
-							foreach($geocode_fields as $field)
-							{
-								$this->EE->api_channel_entries->_set_error($error, 'field_id_'.$field->field_id);	
-							}
+							$this->EE->api_channel_entries->_set_error(lang('gmap_geocoder_no_valid_fields'));
 						}
 					}
 					else
 					{
-						$this->EE->session->set_cache('gmap_geocoder', 'response', $response);
-						$this->EE->session->set_cache('gmap_geocoder', 'fields', $fields);
+						$location_string[$setting_index] = implode($location, ' ');
+						$response = $this->EE->channel_data->gmap->geocode($location_string[$setting_index]);
+						
+						if($response[0]->status != 'OK')
+						{					
+							$error = str_replace(LD.'location'.RD, $location_string[$setting_index], lang('gmap_geocoder_no_valid_location'));
+							
+							if(isset($this->EE->api_sc_channel_entries))
+							{
+								$this->EE->api_sc_channel_entries->errors[] = $error;					
+							}
+							else
+							{
+								foreach($geocode_fields as $field)
+								{
+									$this->EE->api_channel_entries->_set_error($error, 'field_id_'.$field->field_id);	
+								}
+							}
+						}
+						else
+						{
+							$this->EE->session->set_cache('gmap_geocoder', 'response', $response);
+							$this->EE->session->set_cache('gmap_geocoder', 'fields', $fields);
+						}
 					}
 				}
 			}
@@ -167,62 +182,79 @@ class Gmap_geocoder_ext {
 	}
 
 	public function entry_submission_ready($meta, $data, $autosave)
-	{	        
-        $this->_load();
-        
-		$settings = $this->EE->gmap_geocoder_model->get_settings();
-		
-		if(!isset($this->EE->session->cache['gmap_geocoder']))
-		{
-			return $data;
-		}
-		
-		foreach($settings->result() as $setting_index => $setting)
-		{
-			$response = $this->EE->session->cache['gmap_geocoder']['response'];			
-			$fields   = $this->EE->session->cache['gmap_geocoder']['fields'];
+	{	 
+		$entry = $this->EE->channel_data->get_channel_entry($data['entry_id'])->row();
+
+		if(!$this->EE->input->post('safecracker_geocode'))
+		{       
+	        $this->_load();
+	        
+			$settings = $this->EE->gmap_geocoder_model->get_settings();
 			
-			if($response[0]->status == 'OK' && isset($fields[$setting->latitude_field_name]) && isset($fields[$setting->longitude_field_name]))
+			if(!isset($this->EE->session->cache['gmap_geocoder']))
 			{
-				$lat = $response[0]->results[0]->geometry->location->lat;
-				$lng = $response[0]->results[0]->geometry->location->lng;
-								
-				if(isset($fields[$setting->latitude_field_name]))
-				{
-					$lat_field  = $fields[$setting->latitude_field_name];
-										
-					$data[$setting->latitude_field_name]    = $lat;
-					$data['field_id_'.$lat_field->field_id] = $lat;
-				}
-								
-				if(isset($fields[$setting->longitude_field_name]))
-				{
-					$lng_field  = $fields[$setting->longitude_field_name];
-										
-					$data[$setting->longitude_field_name]   = $lng;
-					$data['field_id_'.$lng_field->field_id] = $lng;
-				}
+				return $data;
+			}
+			
+			foreach($settings->result() as $setting_index => $setting)
+			{
+				$response = $this->EE->session->cache['gmap_geocoder']['response'];			
+				$fields   = $this->EE->session->cache['gmap_geocoder']['fields'];
 				
-				if(isset($fields[$setting->gmap_field_name]))
+				if($response[0]->status == 'OK' && isset($fields[$setting->latitude_field_name]) && isset($fields[$setting->longitude_field_name]))
 				{
-					$gmap_field = $fields[$setting->gmap_field_name];								
-					$response   = $this->EE->channel_data->gmap->build_response(array('markers' => array($response[0]->results[0])));
-				
-					$data[$setting->gmap_field_name]   		 = $response;
-					$data['field_id_'.$gmap_field->field_id] = $response;
-				}
-							
-				if(isset($this->EE->api_sc_channel_entries))
-				{
-					$this->EE->api_sc_channel_entries->data = $data;					
-				}
-				else
-				{
-					$this->EE->api_channel_entries->data = $data;
+					$lat = $response[0]->results[0]->geometry->location->lat;
+					$lng = $response[0]->results[0]->geometry->location->lng;
+					
+					if(
+						isset($setting->preserve_lat_lng) && 
+						$setting->preserve_lat_lng == 'true' &&
+						!empty($entry->{$setting->latitude_field_name}) && 
+						!empty($entry->{$setting->longitude_field_name})
+					  )
+					{
+						return $data;
+					}
+
+					if(isset($fields[$setting->latitude_field_name]))
+					{
+						$lat_field  = $fields[$setting->latitude_field_name];
+											
+						$data[$setting->latitude_field_name]    = $lat;
+						$data['field_id_'.$lat_field->field_id] = $lat;
+					}
+									
+					if(isset($fields[$setting->longitude_field_name]))
+					{
+						$lng_field  = $fields[$setting->longitude_field_name];
+											
+						$data[$setting->longitude_field_name]   = $lng;
+						$data['field_id_'.$lng_field->field_id] = $lng;
+					}
+					
+					if(isset($fields[$setting->gmap_field_name]))
+					{
+						$gmap_field = $fields[$setting->gmap_field_name];								
+						$response   = $this->EE->channel_data->gmap->build_response(array('markers' => array($response[0]->results[0])));
+					
+						$data[$setting->gmap_field_name]   		 = $response;
+						$data['field_id_'.$gmap_field->field_id] = $response;
+					}
+								
+					if(isset($this->EE->api_sc_channel_entries))
+					{
+						$this->EE->api_sc_channel_entries->data = $data;					
+					}
+					else
+					{
+						$this->EE->api_channel_entries->data = $data;
+					}
 				}
 			}
 		}
-		
+
+		exit('stop');
+
 		return $data;
 	}
 	
