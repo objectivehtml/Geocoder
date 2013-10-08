@@ -3,11 +3,17 @@
  * 
  * @package		Geocoder
  * @author		Justin Kimbrell
- * @copyright		Copyright (c) 2012, Objective HTML
+ * @copyright   Copyright (c) 2012, Objective HTML
  * @link 		http://www.objectivehtml.com/geocoder
- * @version		1.0.1
- * @build		20130425
+ * @version		1.1.0
+ * @build		20131008
  */
+
+#### 1.1.0
+##### 10/08/2013
+
+- (Feature) Added a new setting to omit throwing errors if no geocoder fields were present.
+- (Feature) Added a new setting to preserve existing lat/lng fields if present. So if lat/lng exists, geocoder will not run.
 
 #### 1.0.1
 ##### 04/25/2013
