@@ -159,8 +159,15 @@ class Gmap_geocoder_ext {
 						
 						if($response[0]->status != 'OK')
 						{					
-							$error = str_replace(LD.'location'.RD, $location_string[$setting_index], lang('gmap_geocoder_no_valid_location'));
-							
+							if($response[0]->status == 'ZERO_RESULTS')
+							{
+								$error = str_replace(LD.'location'.RD, $location_string[$setting_index], lang('gmap_geocoder_no_valid_location'));
+							}
+							else
+							{
+								$error = $response[0]->error_message;
+							}
+
 							if(isset($this->EE->api_sc_channel_entries))
 							{
 								$this->EE->api_sc_channel_entries->errors[] = $error;					
