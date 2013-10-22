@@ -224,7 +224,7 @@ class Gmap_geocoder_ext {
 				{
 					$lat = $response[0]->results[0]->geometry->location->lat;
 					$lng = $response[0]->results[0]->geometry->location->lng;
-					
+
 					if(
 						$entry &&
 						isset($setting->preserve_lat_lng) && 
@@ -260,7 +260,21 @@ class Gmap_geocoder_ext {
 						$data[$setting->gmap_field_name]   		 = $response;
 						$data['field_id_'.$gmap_field->field_id] = $response;
 					}
-								
+						
+					// -------------------------------------------
+					// 'gmap_geocoder_success' hook.
+					//  - Additional processing after a successful geocoder process
+					//  - added in v1.2.0
+					//
+					if($this->EE->extensions->active_hook('gmap_geocoder_success'))
+					{
+						$data = $this->EE->extensions->call('gmap_geocoder_success', $data, $response);
+
+						if ($this->EE->extensions->end_script === TRUE) return;
+					}
+					//
+					// -------------------------------------------
+							
 					if(isset($this->EE->api_sc_channel_entries))
 					{
 						$this->EE->api_sc_channel_entries->data = $data;					
