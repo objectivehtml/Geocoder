@@ -193,6 +193,11 @@ class Gmap_geocoder_ext {
 
 	public function entry_submission_ready($meta, $data, $autosave)
 	{	 
+		if(!isset($data['entry_id']))
+		{
+			return $data;
+		}
+
 		$entry = $this->EE->channel_data->get_channel_entry($data['entry_id']);
 
 		if($entry)
