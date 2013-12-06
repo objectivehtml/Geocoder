@@ -279,8 +279,12 @@ class Gmap_geocoder_ext {
 					}
 					//
 					// -------------------------------------------
-							
-					if(isset($this->EE->api_sc_channel_entries))
+						
+					if(isset($this->EE->api_channel_form_channel_entries))
+					{
+						$this->EE->api_channel_form_channel_entries->data = $data;
+					}
+					else if(isset($this->EE->api_sc_channel_entries))
 					{
 						$this->EE->api_sc_channel_entries->data = $data;					
 					}
