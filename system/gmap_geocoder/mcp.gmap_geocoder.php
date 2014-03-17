@@ -58,8 +58,15 @@ class Gmap_geocoder_mcp {
 			// Add more right nav items here.
 		));
 		
-		$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
-		
+		if(version_compare(APP_VER, '2.6.0', '>='))
+		{
+			$this->EE->cp->cp_page_title = lang('gmap_geocoder_module_name');
+		}
+		else
+		{
+			$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
+		}
+
 		$vars = array(
 			'new_setting_url' => $this->_url('new_setting'),
 			'settings' 		  => $this->EE->gmap_geocoder_model->get_settings(),
@@ -76,7 +83,14 @@ class Gmap_geocoder_mcp {
 			// Add more right nav items here.
 		));
 		
-		$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
+		if(version_compare(APP_VER, '2.6.0', '>='))
+		{
+			$this->EE->cp->cp_page_title = lang('gmap_geocoder_module_name');
+		}
+		else
+		{
+			$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
+		}
 		
 		$vars = array(
 			'header'          => lang('gmap_geocoder_new_instance'),
@@ -98,8 +112,15 @@ class Gmap_geocoder_mcp {
 			// Add more right nav items here.
 		));
 		
-		$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
-		
+		if(version_compare(APP_VER, '2.6.0', '>='))
+		{
+			$this->EE->cp->cp_page_title = lang('gmap_geocoder_module_name');
+		}
+		else
+		{
+			$this->EE->cp->set_variable('cp_page_title', lang('gmap_geocoder_module_name'));
+		}
+
 		$id       = $this->EE->input->get_post('id');
 		$settings = $this->EE->gmap_geocoder_model->get_setting($id);
 		
