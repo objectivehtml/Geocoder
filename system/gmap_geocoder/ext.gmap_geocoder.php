@@ -140,8 +140,12 @@ class Gmap_geocoder_ext {
 					if(count($location) == 0)
 					{				
 						if(!isset($setting->throw_error_no_geocode_fields) || $setting->throw_error_no_geocode_fields == 'true')
-						{
-							if(isset($this->EE->api_sc_channel_entries))
+						{							
+							if(isset($this->EE->api_channel_form_channel_entries))
+							{	
+								$this->EE->api_channel_form_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
+							}
+							else if(isset($this->EE->api_sc_channel_entries))
 							
 							{
 								$this->EE->api_sc_channel_entries->errors[] = lang('gmap_geocoder_no_valid_fields');					
@@ -167,8 +171,12 @@ class Gmap_geocoder_ext {
 							{
 								$error = $response[0]->error_message;
 							}
-
-							if(isset($this->EE->api_sc_channel_entries))
+							
+							if(isset($this->EE->api_channel_form_channel_entries))
+							{
+								$this->EE->api_channel_form_channel_entries->errors[] = $error;					
+							}
+							else if(isset($this->EE->api_sc_channel_entries))
 							{
 								$this->EE->api_sc_channel_entries->errors[] = $error;					
 							}
