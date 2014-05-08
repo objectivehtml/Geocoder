@@ -5,9 +5,18 @@
  * @author		Justin Kimbrell
  * @copyright   Copyright (c) 2012, Objective HTML
  * @link 		http://www.objectivehtml.com/geocoder
- * @version		1.1.0
- * @build		20131008
+ * @version		1.2.0
+ * @build		20140508
  */
+
+#### 1.2.0
+##### 05/08/2015
+
+- (Feature) Added new extension hook, `gmap_geocoder_success`
+- (Bug Fix) Fixed an issue with attempting to geocoding entries without an entry_id (usually entries being creating with some other api source).
+- (Bug Fixes) Fixed an issue with Geocoder not working with Channel Forms
+- (Bug Fix) Removed deprecated functions
+- (Bug Fix) Fixed and issue with Channel Form compatibility
 
 #### 1.1.0
 ##### 10/08/2013
